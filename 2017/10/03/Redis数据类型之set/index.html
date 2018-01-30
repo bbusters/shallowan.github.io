@@ -3,20 +3,26 @@
 <head>
     <meta charset="utf-8">
     
-    <title>About | 夏浅安のブログ</title>
+    <title>Redis数据类型之set | 夏浅安のブログ</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-    <meta property="og:type" content="website">
-<meta property="og:title" content="About">
-<meta property="og:url" content="http://github.com/shallowan/github/index.html">
+        <meta name="keywords" content="redis" />
+    
+    <meta name="description" content="1.redis set介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在集合中的每个元素都是不同的，且没有顺序。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等，由于集合类型的Redis内部是使用值为空的散列表实现，所有这些操作的时">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据类型之set">
+<meta property="og:url" content="http://github.com/shallowan/2017/10/03/Redis数据类型之set/index.html">
 <meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="1.redis set介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在集合中的每个元素都是不同的，且没有顺序。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等，由于集合类型的Redis内部是使用值为空的散列表实现，所有这些操作的时">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg">
-<meta property="og:updated_time" content="2018-01-14T09:32:40.948Z">
+<meta property="og:image" content="http://github.com/images/chaji.png">
+<meta property="og:updated_time" content="2018-01-13T12:52:02.868Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About">
-<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg">
+<meta name="twitter:title" content="Redis数据类型之set">
+<meta name="twitter:description" content="1.redis set介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在集合中的每个元素都是不同的，且没有顺序。 &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等，由于集合类型的Redis内部是使用值为空的散列表实现，所有这些操作的时">
+<meta name="twitter:image" content="http://github.com/images/chaji.png">
     
 
     
@@ -135,27 +141,64 @@
                         <div class="main-body-header">
     <h1 class="header">
     
-    <em class="page-title-link" data-url="/github/index.html">About</em>
+    <a class="page-title-link" href="/categories/redis/">redis</a>
     </h1>
 </div>
                         <div class="main-body-content">
-                            <article id="page-" class="article article-single article-type-page" itemscope itemprop="blogPost">
+                            <article id="post-Redis数据类型之set" class="article article-single article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        About
+        Redis数据类型之set
         </h1>
     
 
             </header>
         
         
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2017/10/03/Redis数据类型之set/" class="article-date">
+            <time datetime="2017-10-03T14:38:49.000Z" itemprop="datePublished">2017-10-03</time>
+        </a>
+    </div>
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/redis/">redis</a>
+    </div>
+
+            </div>
+        
         
         <div class="article-entry" itemprop="articleBody">
-            <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg" alt=""></p>
+            <h4 id="1-redis-set介绍"><a href="#1-redis-set介绍" class="headerlink" title="1.redis set介绍"></a>1.redis set介绍</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在集合中的每个元素都是不同的，且没有顺序。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;集合类型的常用操作是向集合中加入或删除元素、判断某个元素是否存在等，由于集合类型的Redis内部是使用值为空的散列表实现，所有这些操作的时间复杂度都为0(1)。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Redis还提供了多个集合之间的交集、并集、差集的运算。<br><a id="more"></a></p>
+<h4 id="2-命令"><a href="#2-命令" class="headerlink" title="2.命令"></a>2.命令</h4><h6 id="增加-删除元素"><a href="#增加-删除元素" class="headerlink" title="增加/删除元素"></a>增加/删除元素</h6><p><code>SADD key member [member ...]</code></p>
+<p><code>SREM key member [member ...]</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sadd set a b c</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; sadd set a</span><br><span class="line"></span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; srem set c d</span><br><span class="line"></span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure></p>
+<h6 id="获得集合中的所有元素"><a href="#获得集合中的所有元素" class="headerlink" title="获得集合中的所有元素"></a>获得集合中的所有元素</h6><p><code>SMEMBERS key</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; smembers set</span><br><span class="line"></span><br><span class="line">1) &quot;b&quot;</span><br><span class="line"></span><br><span class="line">2) &quot;a”</span><br></pre></td></tr></table></figure></p>
+<p>判断元素是否在集合中，无论集合中有多少元素都可以极速的返回结果。</p>
+<p><code>SISMEMBER key member</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sismember set a</span><br><span class="line"></span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; sismember set h</span><br><span class="line"></span><br><span class="line">(integer) 0</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-其它命令"><a href="#3-其它命令" class="headerlink" title="3.其它命令"></a>3.其它命令</h4><h6 id="集合的差集运算-A-B"><a href="#集合的差集运算-A-B" class="headerlink" title="集合的差集运算 A-B"></a>集合的差集运算 A-B</h6><p>属于A并且不属于B的元素构成的集合。</p>
+<p><img src="/images/chaji.png" alt=""></p>
+<p><code>SDIFF key [key ...]</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sadd setA 1 2 3</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; sadd setB 2 3 4</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; sdiff setA setB</span><br><span class="line"></span><br><span class="line">1) &quot;1&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; sdiff setB setA</span><br><span class="line"></span><br><span class="line">1) &quot;4&quot;</span><br></pre></td></tr></table></figure></p>
+<h6 id="集合的交集运算-A-∩-B"><a href="#集合的交集运算-A-∩-B" class="headerlink" title="集合的交集运算 A ∩ B"></a>集合的交集运算 A ∩ B</h6><p>属于A且属于B的元素构成的集合。</p>
+<p><img src="/images/jiaoji.png" alt=""></p>
+<p><code>SINTER key [key ...]</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sinter setA setB</span><br><span class="line"></span><br><span class="line">1) &quot;2&quot;</span><br><span class="line"></span><br><span class="line">2) &quot;3&quot;</span><br></pre></td></tr></table></figure></p>
+<h6 id="集合的并集运算-A-∪-B"><a href="#集合的并集运算-A-∪-B" class="headerlink" title="集合的并集运算 A ∪ B"></a>集合的并集运算 A ∪ B</h6><p>属于A或者属于B的元素构成的集合</p>
+<p><img src="/images/bingji.png" alt=""></p>
+<h6 id="S"><a href="#S" class="headerlink" title="S"></a>S</h6><p><strong>获得集合中元素的个数</strong></p>
+<p><code>SCARD key</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; smembers setA</span><br><span class="line"></span><br><span class="line">1) &quot;1&quot;</span><br><span class="line"></span><br><span class="line">2) &quot;2&quot;</span><br><span class="line"></span><br><span class="line">3) &quot;3&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; scard setA</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure></p>
+<p>从集合中弹出一个元素</p>
+<p><code>SPOP key</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; spop setA</span><br><span class="line"></span><br><span class="line">&quot;1&quot;</span><br></pre></td></tr></table></figure></p>
+<p>注意：由于集合是无序的，所有SPOP命令会从集合中随机选择一个元素弹出</p>
+<p><code>UNION key [key ...]</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; sunion setA setB</span><br><span class="line"></span><br><span class="line">1) &quot;1&quot;</span><br><span class="line"></span><br><span class="line">2) &quot;2&quot;</span><br><span class="line"></span><br><span class="line">3) &quot;3&quot;</span><br><span class="line"></span><br><span class="line">4) &quot;4&quot;</span><br></pre></td></tr></table></figure></p>
 
         </div>
         <footer class="article-footer">
@@ -163,7 +206,7 @@
 
 
 
-    <a data-url="http://github.com/shallowan/github/index.html" data-id="cjcelhs050000awqenhm1zrwq" class="article-share-link"><i class="fa fa-share"></i>シェア</a>
+    <a data-url="http://github.com/shallowan/2017/10/03/Redis数据类型之set/" data-id="cjd1oilrh0008e8qeqcaryffu" class="article-share-link"><i class="fa fa-share"></i>シェア</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -296,6 +339,29 @@
             
         </ul>
     </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/14/love/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">新しい</strong>
+        <p class="article-nav-title">
+        
+            独家记忆
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2017/10/03/Redis数据类型之list/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">古い</strong>
+        <p class="article-nav-title">Redis数据类型之list</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
     
     <div class="widgets-container">
         
@@ -493,7 +559,7 @@
     var disqus_shortname = 'hexo-theme-hueman';
     
     
-    var disqus_url = 'http://github.com/shallowan/github/index.html';
+    var disqus_url = 'http://github.com/shallowan/2017/10/03/Redis数据类型之set/';
     
     (function() {
     var dsq = document.createElement('script');

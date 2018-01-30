@@ -3,20 +3,24 @@
 <head>
     <meta charset="utf-8">
     
-    <title>About | 夏浅安のブログ</title>
+    <title>Redis数据类型之string | 夏浅安のブログ</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-    <meta property="og:type" content="website">
-<meta property="og:title" content="About">
-<meta property="og:url" content="http://github.com/shallowan/github/index.html">
+        <meta name="keywords" content="redis" />
+    
+    <meta name="description" content="1. redis string介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;redis中没有使用C语言的字符串表示，而是自定义一个数据结构叫SDS（simple dynamic string）即简单动态字符串。">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据类型之string">
+<meta property="og:url" content="http://github.com/shallowan/2017/10/03/Redis数据类型之string/index.html">
 <meta property="og:site_name" content="夏浅安のブログ">
+<meta property="og:description" content="1. redis string介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;redis中没有使用C语言的字符串表示，而是自定义一个数据结构叫SDS（simple dynamic string）即简单动态字符串。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg">
-<meta property="og:updated_time" content="2018-01-14T09:32:40.948Z">
+<meta property="og:updated_time" content="2018-01-13T12:52:24.187Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="About">
-<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg">
+<meta name="twitter:title" content="Redis数据类型之string">
+<meta name="twitter:description" content="1. redis string介绍&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;redis中没有使用C语言的字符串表示，而是自定义一个数据结构叫SDS（simple dynamic string）即简单动态字符串。">
     
 
     
@@ -135,27 +139,74 @@
                         <div class="main-body-header">
     <h1 class="header">
     
-    <em class="page-title-link" data-url="/github/index.html">About</em>
+    <a class="page-title-link" href="/categories/redis/">redis</a>
     </h1>
 </div>
                         <div class="main-body-content">
-                            <article id="page-" class="article article-single article-type-page" itemscope itemprop="blogPost">
+                            <article id="post-Redis数据类型之string" class="article article-single article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        About
+        Redis数据类型之string
         </h1>
     
 
             </header>
         
         
+            <div class="article-meta">
+                
+    <div class="article-date">
+        <a href="/2017/10/03/Redis数据类型之string/" class="article-date">
+            <time datetime="2017-10-03T03:09:46.000Z" itemprop="datePublished">2017-10-03</time>
+        </a>
+    </div>
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/redis/">redis</a>
+    </div>
+
+            </div>
+        
         
         <div class="article-entry" itemprop="articleBody">
-            <p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1511360705115&amp;di=b42a0b0c5ad2ad45a38f1e5a81257a8e&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.web1.com.cn%2FUploadFiles%2FUEditor%2F20160913045014890.jpg" alt=""></p>
+            <h5 id="1-redis-string介绍"><a href="#1-redis-string介绍" class="headerlink" title="1. redis string介绍"></a>1. redis string介绍</h5><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;redis中没有使用C语言的字符串表示，而是自定义一个数据结构叫SDS（simple dynamic string）即简单动态字符串。<br><a id="more"></a><br>打开下载的redis源码包，找到src下的sds.h文件查看sds源码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="comment">//字符串长度</span></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">int</span> len;</span><br><span class="line">  <span class="comment">//buf数组中未使用的字节数量</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">  <span class="comment">//用于保存字符串</span></span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c语言对字符串的存储是使用字符数组，遇到’\0’字符则认为字符串结束，redis的字符串可以存储任何类型的数据，因为任何类型数据都可以表示成二进制，sds结构中的char buf[]就是存储了二进制数据。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;redis的字符串是二进制安全的，什么是二进制安全？简单理解就是存入什么数据取出的还是什么数据。redis中的sds不像c语言处理字符串那样遇到’\0’字符则认证字符串结束，它不会对存储进去的二进制数据进行处理，存入什么数据取出还是什么数据。</p>
+<h5 id="2-命令"><a href="#2-命令" class="headerlink" title="2. 命令"></a>2. 命令</h5><h6 id="赋值"><a href="#赋值" class="headerlink" title="赋值"></a>赋值</h6><p><code>SET key value</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; set test 123</span><br><span class="line"></span><br><span class="line">OK</span><br></pre></td></tr></table></figure></p>
+<h6 id="取值"><a href="#取值" class="headerlink" title="取值"></a>取值</h6><p><code>GET key</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; get test</span><br><span class="line"></span><br><span class="line">&quot;123&quot;</span><br></pre></td></tr></table></figure></p>
+<p>当键不存在时返回空结果。</p>
+<p><code>GETSET key value</code></p>
+<p>取值时同时对key进行赋值操作</p>
+<h6 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h6><p><code>Del key</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; del test</span><br><span class="line"></span><br><span class="line">(integer) 1</span><br></pre></td></tr></table></figure></p>
+<h6 id="数值增减"><a href="#数值增减" class="headerlink" title="数值增减"></a>数值增减</h6><p>递增数字</p>
+<p><code>INCR key</code></p>
+<p>当存储的字符串是整数时，Redis提供了一个实用的命令INCR，其作用是让当前键值递增，并返回递增后的值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; incr num</span><br><span class="line"></span><br><span class="line">(integer) 1</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; incr num</span><br><span class="line"></span><br><span class="line">(integer) 2</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; incr num</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure></p>
+<p>增加指定的整数</p>
+<p><code>INCRBY key increment</code></p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; incrby num 2</span><br><span class="line"></span><br><span class="line">(integer) 5</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; incrby num 2</span><br><span class="line"></span><br><span class="line">(integer) 7</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; incrby num 2</span><br><span class="line"></span><br><span class="line">(integer) 9</span><br></pre></td></tr></table></figure></p>
+<p>递减数值</p>
+<p><code>DECR key</code></p>
+<h5 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h5><p>减少指定的整数</p>
+<p><code>DECRBY key decrement</code></p>
+<p>示例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; decr num</span><br><span class="line"></span><br><span class="line">(integer) 6</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; decr num</span><br><span class="line"></span><br><span class="line">(integer) 5</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; decrby num 3</span><br><span class="line"></span><br><span class="line">(integer) 2</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; decrby num 3</span><br><span class="line"></span><br><span class="line">(integer) -1</span><br></pre></td></tr></table></figure></p>
+<p>向尾部追加值</p>
+<p><code>APPEND key value</code></p>
+<p>APPEND的作用是向键值的末尾追加value。如果键不存在则将该键的值设置为value，即相当于 SET key value。返回值是追加后字符串的总长度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; set str hello</span><br><span class="line"></span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; append str &quot; world!&quot;</span><br><span class="line"></span><br><span class="line">(integer) 12</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; get str</span><br><span class="line"></span><br><span class="line">&quot;hello world!&quot;</span><br></pre></td></tr></table></figure></p>
+<p>获取字符串长度</p>
+<p><code>STRLEN key</code></p>
+<p>STRLEN命令返回键值的长度，如果键不存在则返回0。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; strlen str</span><br><span class="line"></span><br><span class="line">(integer) 0</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; set str hello</span><br><span class="line"></span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; strlen str</span><br><span class="line"></span><br><span class="line">(integer) 5</span><br></pre></td></tr></table></figure></p>
+<p>同时设置/获取多个键值</p>
+<p><code>MSET key value [key value …]</code></p>
+<p><code>MGET key [key …]</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; mset k1 v1 k2 v2 k3 v3</span><br><span class="line"></span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; get k1</span><br><span class="line"></span><br><span class="line">&quot;v1&quot;</span><br><span class="line"></span><br><span class="line">127.0.0.1:6379&gt; mget k1 k3</span><br><span class="line"></span><br><span class="line">1) &quot;v1&quot;</span><br><span class="line"></span><br><span class="line">2) &quot;v3&quot;</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-应用"><a href="#3-应用" class="headerlink" title="3.应用"></a>3.应用</h4><p>自增主键</p>
+<p>商品编号、订单号采用string的递增数字特性生成。</p>
+<p>定义商品编号key：items:id<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">192.168.101.3:7003&gt; INCR items:id</span><br><span class="line"></span><br><span class="line">(integer) 2</span><br><span class="line"></span><br><span class="line">192.168.101.3:7003&gt; INCR items:id</span><br><span class="line"></span><br><span class="line">(integer) 3</span><br></pre></td></tr></table></figure></p>
 
         </div>
         <footer class="article-footer">
@@ -163,7 +214,7 @@
 
 
 
-    <a data-url="http://github.com/shallowan/github/index.html" data-id="cjcelhs050000awqenhm1zrwq" class="article-share-link"><i class="fa fa-share"></i>シェア</a>
+    <a data-url="http://github.com/shallowan/2017/10/03/Redis数据类型之string/" data-id="cjd1oilre0005e8qe7km1umvr" class="article-share-link"><i class="fa fa-share"></i>シェア</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -296,6 +347,29 @@
             
         </ul>
     </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/10/03/Redis数据类型之hash/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">新しい</strong>
+        <p class="article-nav-title">
+        
+            Redis数据类型之hash
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2017/10/01/Jedis/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">古い</strong>
+        <p class="article-nav-title">Jedis</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
     
     <div class="widgets-container">
         
@@ -493,7 +567,7 @@
     var disqus_shortname = 'hexo-theme-hueman';
     
     
-    var disqus_url = 'http://github.com/shallowan/github/index.html';
+    var disqus_url = 'http://github.com/shallowan/2017/10/03/Redis数据类型之string/';
     
     (function() {
     var dsq = document.createElement('script');
